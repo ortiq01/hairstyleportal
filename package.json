@@ -3,7 +3,8 @@
   "version": "0.1.0",
   "main": "index.js",
   "scripts": {
-    "start": "pm2 start ecosystem.config.js"
+  "start": "pm2 start ecosystem.config.js",
+  "deploy:prod": "bash scripts/deploy-prod.sh"
   },
   "dependencies": {
     "express": "^4.18.2"
