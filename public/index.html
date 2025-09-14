@@ -14,6 +14,27 @@
       a{color:#1d4ed8;text-decoration:none}
       a:hover{text-decoration:underline}
       code{background:#f3f4f6;padding:2px 6px;border-radius:4px}
+      .reviews-section{margin-top:32px;padding-top:32px;border-top:1px solid #e5e7eb}
+      .review-form{background:#f9fafb;padding:20px;border-radius:8px;margin-bottom:24px}
+      .form-group{margin-bottom:16px}
+      .form-group label{display:block;margin-bottom:4px;font-weight:500}
+      .form-group input,.form-group textarea,.form-group select{width:100%;padding:8px;border:1px solid #d1d5db;border-radius:4px;font-family:inherit}
+      .form-group textarea{height:80px;resize:vertical}
+      .rating-input{display:flex;gap:8px;align-items:center}
+      .rating-input input[type="radio"]{width:auto;margin-right:4px}
+      .btn{background:#1d4ed8;color:white;padding:10px 16px;border:none;border-radius:4px;cursor:pointer;font-family:inherit}
+      .btn:hover{background:#1e40af}
+      .btn:disabled{background:#9ca3af;cursor:not-allowed}
+      .error{color:#dc2626;font-size:14px;margin-top:4px}
+      .review-item{background:#f9fafb;padding:16px;border-radius:8px;margin-bottom:12px}
+      .review-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+      .review-name{font-weight:500}
+      .review-rating{color:#f59e0b}
+      .review-date{color:#6b7280;font-size:14px}
+      .review-text{margin-top:8px}
+      .stats{display:flex;gap:16px;margin-bottom:16px;font-size:14px}
+      .stat-item{padding:8px 12px;background:#e5e7eb;border-radius:4px}
+      .honeypot{position:absolute;left:-9999px;opacity:0}
     </style>
   </head>
   <body>
@@ -37,6 +58,218 @@
       </div>
 
       <p class="muted" style="margin-top:16px">Edit <code>public/index.html</code> to customize.</p>
+      
+      <!-- Reviews Section -->
+      <div class="reviews-section">
+        <h2>Customer Reviews</h2>
+        
+        <!-- Stats -->
+        <div class="stats" id="reviewStats">
+          <div class="stat-item">Loading...</div>
+        </div>
+        
+        <!-- Review Form -->
+        <div class="review-form">
+          <h3>Leave a Review</h3>
+          <form id="reviewForm">
+            <div class="form-group">
+              <label for="reviewName">Your Name *</label>
+              <input type="text" id="reviewName" name="name" required>
+              <div class="error" id="nameError"></div>
+            </div>
+            
+            <div class="form-group">
+              <label>Rating *</label>
+              <div class="rating-input">
+                <input type="radio" id="rating1" name="rating" value="1" required>
+                <label for="rating1">1 ⭐</label>
+                <input type="radio" id="rating2" name="rating" value="2">
+                <label for="rating2">2 ⭐</label>
+                <input type="radio" id="rating3" name="rating" value="3">
+                <label for="rating3">3 ⭐</label>
+                <input type="radio" id="rating4" name="rating" value="4">
+                <label for="rating4">4 ⭐</label>
+                <input type="radio" id="rating5" name="rating" value="5">
+                <label for="rating5">5 ⭐</label>
+              </div>
+              <div class="error" id="ratingError"></div>
+            </div>
+            
+            <div class="form-group">
+              <label for="reviewText">Your Review *</label>
+              <textarea id="reviewText" name="text" placeholder="Tell us about your experience..." required></textarea>
+              <div class="error" id="textError"></div>
+            </div>
+            
+            <!-- Honeypot field for spam protection -->
+            <div class="honeypot">
+              <label for="website">Website</label>
+              <input type="text" id="website" name="honeypot" tabindex="-1" autocomplete="off">
+            </div>
+            
+            <button type="submit" class="btn" id="submitBtn">Submit Review</button>
+            <div class="error" id="formError"></div>
+          </form>
+        </div>
+        
+        <!-- Reviews List -->
+        <div id="reviewsList">
+          <h3>Recent Reviews</h3>
+          <div id="reviews">Loading reviews...</div>
+        </div>
+      </div>
     </div>
+
+    <script>
+      const formLoadTime = Date.now();
+      
+      // Load and display reviews and stats
+      async function loadReviews() {
+        try {
+          const [reviewsRes, statsRes] = await Promise.all([
+            fetch('/api/reviews'),
+            fetch('/api/reviews/stats')
+          ]);
+          
+          if (reviewsRes.ok && statsRes.ok) {
+            const reviews = await reviewsRes.json();
+            const stats = await statsRes.json();
+            
+            displayStats(stats);
+            displayReviews(reviews);
+          }
+        } catch (error) {
+          console.error('Error loading reviews:', error);
+          document.getElementById('reviewStats').innerHTML = '<div class="stat-item">Error loading stats</div>';
+          document.getElementById('reviews').innerHTML = 'Error loading reviews';
+        }
+      }
+      
+      function displayStats(stats) {
+        const statsHtml = stats.totalReviews > 0 
+          ? `<div class="stat-item">Average Rating: ${stats.averageRating}⭐</div>
+             <div class="stat-item">Total Reviews: ${stats.totalReviews}</div>`
+          : '<div class="stat-item">No reviews yet</div>';
+        document.getElementById('reviewStats').innerHTML = statsHtml;
+      }
+      
+      function displayReviews(reviews) {
+        const reviewsContainer = document.getElementById('reviews');
+        
+        if (reviews.length === 0) {
+          reviewsContainer.innerHTML = '<p class="muted">No reviews yet. Be the first to leave a review!</p>';
+          return;
+        }
+        
+        const reviewsHtml = reviews.slice(-10).reverse().map(review => {
+          const date = new Date(review.createdAt).toLocaleDateString();
+          const stars = '⭐'.repeat(review.rating);
+          
+          return `
+            <div class="review-item">
+              <div class="review-header">
+                <span class="review-name">${escapeHtml(review.name)}</span>
+                <div>
+                  <span class="review-rating">${stars}</span>
+                  <span class="review-date">${date}</span>
+                </div>
+              </div>
+              <div class="review-text">${escapeHtml(review.text)}</div>
+            </div>
+          `;
+        }).join('');
+        
+        reviewsContainer.innerHTML = reviewsHtml;
+      }
+      
+      function escapeHtml(text) {
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+      }
+      
+      // Form validation and submission
+      function clearErrors() {
+        ['nameError', 'ratingError', 'textError', 'formError'].forEach(id => {
+          document.getElementById(id).textContent = '';
+        });
+      }
+      
+      function showError(field, message) {
+        document.getElementById(field + 'Error').textContent = message;
+      }
+      
+      function validateForm() {
+        clearErrors();
+        let isValid = true;
+        
+        const name = document.getElementById('reviewName').value.trim();
+        if (!name) {
+          showError('name', 'Name is required');
+          isValid = false;
+        }
+        
+        const rating = document.querySelector('input[name="rating"]:checked');
+        if (!rating) {
+          showError('rating', 'Please select a rating');
+          isValid = false;
+        }
+        
+        const text = document.getElementById('reviewText').value.trim();
+        if (!text) {
+          showError('text', 'Review text is required');
+          isValid = false;
+        }
+        
+        return isValid;
+      }
+      
+      document.getElementById('reviewForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        
+        if (!validateForm()) return;
+        
+        const submitBtn = document.getElementById('submitBtn');
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Submitting...';
+        
+        try {
+          const formData = {
+            name: document.getElementById('reviewName').value.trim(),
+            rating: parseInt(document.querySelector('input[name="rating"]:checked').value),
+            text: document.getElementById('reviewText').value.trim(),
+            honeypot: document.getElementById('website').value,
+            timestamp: formLoadTime
+          };
+          
+          const response = await fetch('/api/reviews', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(formData)
+          });
+          
+          if (response.ok) {
+            // Clear form
+            document.getElementById('reviewForm').reset();
+            // Reload reviews
+            await loadReviews();
+            alert('Review submitted successfully! Thank you for your feedback.');
+          } else {
+            const errorData = await response.json();
+            showError('form', errorData.error || 'Failed to submit review');
+          }
+        } catch (error) {
+          showError('form', 'Network error. Please try again.');
+        } finally {
+          submitBtn.disabled = false;
+          submitBtn.textContent = 'Submit Review';
+        }
+      });
+      
+      // Load reviews on page load
+      loadReviews();
+    </script>
   </body>
 </html>
