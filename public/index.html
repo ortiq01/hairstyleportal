@@ -14,6 +14,20 @@
       a{color:#1d4ed8;text-decoration:none}
       a:hover{text-decoration:underline}
       code{background:#f3f4f6;padding:2px 6px;border-radius:4px}
+      .btn{background:#2563eb;color:white;border:none;padding:8px 16px;border-radius:6px;cursor:pointer;font-size:14px}
+      .btn:hover{background:#1d4ed8}
+      .btn:disabled{background:#9ca3af;cursor:not-allowed}
+      .form-group{margin:12px 0}
+      .form-group label{display:block;margin-bottom:4px;font-weight:500}
+      .form-group input, .form-group select{width:100%;padding:8px;border:1px solid #d1d5db;border-radius:4px;box-sizing:border-box}
+      .booking-section{margin-top:24px;border-top:1px solid #e5e7eb;padding-top:24px}
+      .modal{display:none;position:fixed;z-index:1000;left:0;top:0;width:100%;height:100%;background:rgba(0,0,0,0.5)}
+      .modal-content{background:white;margin:15% auto;padding:20px;border-radius:8px;width:90%;max-width:500px;position:relative}
+      .close{position:absolute;right:10px;top:10px;font-size:24px;cursor:pointer;color:#6b7280}
+      .close:hover{color:#374151}
+      #bookingStatus{margin-top:12px;padding:8px;border-radius:4px;display:none}
+      .status-success{background:#d1fae5;color:#065f46;border:1px solid #a7f3d0}
+      .status-error{background:#fee2e2;color:#991b1b;border:1px solid #fecaca}
     </style>
   </head>
   <body>
@@ -36,7 +50,186 @@
         </div>
       </div>
 
+      <!-- Booking Section -->
+      <div class="booking-section">
+        <h2>Book an Appointment</h2>
+        <p class="muted">Schedule your appointment with our professional stylists.</p>
+        
+        <div class="form-group">
+          <label for="service">Service:</label>
+          <select id="service">
+            <option value="">Select a service</option>
+            <option value="Haircut">Haircut</option>
+            <option value="Hair Wash & Cut">Hair Wash & Cut</option>
+            <option value="Hair Coloring">Hair Coloring</option>
+            <option value="Hair Styling">Hair Styling</option>
+            <option value="Hair Treatment">Hair Treatment</option>
+          </select>
+        </div>
+        
+        <div class="form-group">
+          <label for="stylist">Preferred Stylist (optional):</label>
+          <select id="stylist">
+            <option value="">Any stylist</option>
+            <option value="Sarah">Sarah</option>
+            <option value="John">John</option>
+            <option value="Emma">Emma</option>
+            <option value="Mike">Mike</option>
+          </select>
+        </div>
+        
+        <div class="form-group">
+          <label for="preferredDate">Preferred Date:</label>
+          <input type="date" id="preferredDate">
+        </div>
+        
+        <div class="form-group">
+          <label for="preferredTime">Preferred Time:</label>
+          <input type="time" id="preferredTime">
+        </div>
+        
+        <button class="btn" onclick="initiateBooking()" id="bookBtn">Book Appointment</button>
+        
+        <div id="bookingStatus"></div>
+      </div>
+
+      <!-- Contact Section (fallback) -->
+      <div id="contact" class="booking-section">
+        <h2>Contact Us</h2>
+        <p class="muted">Get in touch with us directly to schedule your appointment.</p>
+        <p>Phone: (555) 123-4567</p>
+        <p>Email: info@hairstyleportal.com</p>
+        <p>Address: 123 Beauty Street, Style City, SC 12345</p>
+      </div>
+
+      <!-- Booking Modal for embeds -->
+      <div id="bookingModal" class="modal">
+        <div class="modal-content">
+          <span class="close" onclick="closeModal()">&times;</span>
+          <h2>Book Your Appointment</h2>
+          <div id="embedContainer"></div>
+        </div>
+      </div>
+
       <p class="muted" style="margin-top:16px">Edit <code>public/index.html</code> to customize.</p>
     </div>
+
+    <script>
+      // Set minimum date to today
+      document.getElementById('preferredDate').min = new Date().toISOString().split('T')[0];
+
+      async function initiateBooking() {
+        const bookBtn = document.getElementById('bookBtn');
+        const status = document.getElementById('bookingStatus');
+        
+        // Disable button and show loading
+        bookBtn.disabled = true;
+        bookBtn.textContent = 'Processing...';
+        status.style.display = 'none';
+        
+        try {
+          const bookingData = {
+            service: document.getElementById('service').value,
+            stylist: document.getElementById('stylist').value,
+            preferredDate: document.getElementById('preferredDate').value,
+            preferredTime: document.getElementById('preferredTime').value
+          };
+          
+          const response = await fetch('/api/booking/initiate', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(bookingData)
+          });
+          
+          const result = await response.json();
+          
+          switch (result.action) {
+            case 'embed':
+              showEmbedModal(result);
+              break;
+              
+            case 'link':
+              window.open(result.url, '_blank');
+              showStatus('Redirecting to booking page...', 'success');
+              break;
+              
+            case 'whatsapp':
+              window.open(result.url, '_blank');
+              showStatus('Opening WhatsApp with pre-filled message...', 'success');
+              break;
+              
+            case 'fallback':
+            default:
+              showStatus(result.message || 'Please contact us directly to book your appointment.', 'error');
+              // Scroll to contact section
+              document.getElementById('contact').scrollIntoView({ behavior: 'smooth' });
+              break;
+          }
+        } catch (error) {
+          console.error('Booking error:', error);
+          showStatus('There was an error processing your booking request. Please try again or contact us directly.', 'error');
+        } finally {
+          // Re-enable button
+          bookBtn.disabled = false;
+          bookBtn.textContent = 'Book Appointment';
+        }
+      }
+
+      function showEmbedModal(result) {
+        const modal = document.getElementById('bookingModal');
+        const container = document.getElementById('embedContainer');
+        
+        // Clear previous content
+        container.innerHTML = '';
+        
+        if (result.embedScript) {
+          // Create a div to contain the embed
+          const embedDiv = document.createElement('div');
+          embedDiv.innerHTML = result.embedScript;
+          container.appendChild(embedDiv);
+          
+          // Execute any scripts in the embed
+          const scripts = embedDiv.getElementsByTagName('script');
+          for (let i = 0; i < scripts.length; i++) {
+            const script = document.createElement('script');
+            script.text = scripts[i].innerHTML;
+            document.head.appendChild(script);
+          }
+        } else {
+          container.innerHTML = '<p>Booking widget is not properly configured. Please contact us directly.</p>';
+        }
+        
+        modal.style.display = 'block';
+        showStatus('Opening booking widget...', 'success');
+      }
+
+      function closeModal() {
+        document.getElementById('bookingModal').style.display = 'none';
+      }
+
+      function showStatus(message, type) {
+        const status = document.getElementById('bookingStatus');
+        status.textContent = message;
+        status.className = type === 'success' ? 'status-success' : 'status-error';
+        status.style.display = 'block';
+        
+        // Hide after 5 seconds for success messages
+        if (type === 'success') {
+          setTimeout(() => {
+            status.style.display = 'none';
+          }, 5000);
+        }
+      }
+
+      // Close modal when clicking outside of it
+      window.onclick = function(event) {
+        const modal = document.getElementById('bookingModal');
+        if (event.target === modal) {
+          closeModal();
+        }
+      }
+    </script>
   </body>
 </html>

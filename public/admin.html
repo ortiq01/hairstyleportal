@@ -1,0 +1,224 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Booking Admin - Hairstyle Portal</title>
+    <style>
+      body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,Noto Sans,sans-serif; margin:40px;}
+      .card{max-width:720px;margin:auto;padding:24px;border:1px solid #e5e7eb;border-radius:12px;}
+      h1{margin:0 0 8px 0}
+      h2{margin:24px 0 12px 0}
+      .muted{color:#6b7280}
+      .form-group{margin:12px 0}
+      .form-group label{display:block;margin-bottom:4px;font-weight:500}
+      .form-group input, .form-group select, .form-group textarea{width:100%;padding:8px;border:1px solid #d1d5db;border-radius:4px;box-sizing:border-box}
+      .form-group textarea{height:100px;resize:vertical}
+      .btn{background:#2563eb;color:white;border:none;padding:8px 16px;border-radius:6px;cursor:pointer;font-size:14px;margin:4px 8px 4px 0}
+      .btn:hover{background:#1d4ed8}
+      .btn:disabled{background:#9ca3af;cursor:not-allowed}
+      .btn-secondary{background:#6b7280}
+      .btn-secondary:hover{background:#4b5563}
+      .provider-settings{margin:16px 0;padding:16px;border:1px solid #e5e7eb;border-radius:8px;background:#f9fafb}
+      #status{margin-top:12px;padding:8px;border-radius:4px;display:none}
+      .status-success{background:#d1fae5;color:#065f46;border:1px solid #a7f3d0}
+      .status-error{background:#fee2e2;color:#991b1b;border:1px solid #fecaca}
+      .hidden{display:none}
+    </style>
+  </head>
+  <body>
+    <div class="card">
+      <h1>Booking Provider Admin</h1>
+      <p class="muted">Configure booking integration for your hairstyle portal.</p>
+
+      <div class="form-group">
+        <label for="provider">Booking Provider:</label>
+        <select id="provider" onchange="showProviderSettings()">
+          <option value="">No booking provider (fallback to contact)</option>
+          <option value="salonized">Salonized</option>
+          <option value="treatwell">Treatwell</option>
+          <option value="whatsapp">WhatsApp</option>
+        </select>
+      </div>
+
+      <!-- Salonized Settings -->
+      <div id="salonizedSettings" class="provider-settings hidden">
+        <h3>Salonized Configuration</h3>
+        <div class="form-group">
+          <label for="salonizedEmbed">Embed Script:</label>
+          <textarea id="salonizedEmbed" placeholder="Paste your Salonized embed script here..."></textarea>
+        </div>
+      </div>
+
+      <!-- Treatwell Settings -->
+      <div id="treatwellSettings" class="provider-settings hidden">
+        <h3>Treatwell Configuration</h3>
+        <div class="form-group">
+          <label for="treatwellUrl">Booking URL:</label>
+          <input type="url" id="treatwellUrl" placeholder="https://www.treatwell.com/place/your-salon">
+        </div>
+      </div>
+
+      <!-- WhatsApp Settings -->
+      <div id="whatsappSettings" class="provider-settings hidden">
+        <h3>WhatsApp Configuration</h3>
+        <div class="form-group">
+          <label for="whatsappPhone">Phone Number (with country code):</label>
+          <input type="tel" id="whatsappPhone" placeholder="+1234567890">
+        </div>
+      </div>
+
+      <button class="btn" onclick="saveConfiguration()">Save Configuration</button>
+      <button class="btn btn-secondary" onclick="loadConfiguration()">Load Current Config</button>
+      <button class="btn btn-secondary" onclick="testBooking()">Test Booking</button>
+
+      <div id="status"></div>
+
+      <div style="margin-top:24px;border-top:1px solid #e5e7eb;padding-top:24px;">
+        <h2>Current Configuration</h2>
+        <pre id="currentConfig" style="background:#f3f4f6;padding:12px;border-radius:4px;font-size:12px;"></pre>
+      </div>
+
+      <div style="margin-top:16px;">
+        <a href="/">← Back to Portal</a>
+      </div>
+    </div>
+
+    <script>
+      // Load current configuration on page load
+      window.addEventListener('load', loadConfiguration);
+
+      async function loadConfiguration() {
+        try {
+          const response = await fetch('/api/booking/config');
+          const config = await response.json();
+          
+          document.getElementById('provider').value = config.provider || '';
+          
+          // Clear all settings
+          document.getElementById('salonizedEmbed').value = '';
+          document.getElementById('treatwellUrl').value = '';
+          document.getElementById('whatsappPhone').value = '';
+          
+          // Load provider-specific settings
+          if (config.provider && config.settings) {
+            switch (config.provider) {
+              case 'salonized':
+                document.getElementById('salonizedEmbed').value = config.settings.embedScript || '';
+                break;
+              case 'treatwell':
+                document.getElementById('treatwellUrl').value = config.settings.bookingUrl || '';
+                break;
+              case 'whatsapp':
+                document.getElementById('whatsappPhone').value = config.settings.phoneNumber || '';
+                break;
+            }
+          }
+          
+          showProviderSettings();
+          document.getElementById('currentConfig').textContent = JSON.stringify(config, null, 2);
+          showStatus('Configuration loaded successfully', 'success');
+        } catch (error) {
+          console.error('Load error:', error);
+          showStatus('Failed to load configuration', 'error');
+        }
+      }
+
+      function showProviderSettings() {
+        const provider = document.getElementById('provider').value;
+        
+        // Hide all settings
+        document.getElementById('salonizedSettings').classList.add('hidden');
+        document.getElementById('treatwellSettings').classList.add('hidden');
+        document.getElementById('whatsappSettings').classList.add('hidden');
+        
+        // Show relevant settings
+        if (provider) {
+          document.getElementById(provider + 'Settings').classList.remove('hidden');
+        }
+      }
+
+      async function saveConfiguration() {
+        const provider = document.getElementById('provider').value || null;
+        let settings = {};
+        
+        // Collect provider-specific settings
+        if (provider) {
+          switch (provider) {
+            case 'salonized':
+              settings.embedScript = document.getElementById('salonizedEmbed').value;
+              break;
+            case 'treatwell':
+              settings.bookingUrl = document.getElementById('treatwellUrl').value;
+              break;
+            case 'whatsapp':
+              settings.phoneNumber = document.getElementById('whatsappPhone').value;
+              break;
+          }
+        }
+        
+        try {
+          const response = await fetch('/api/booking/config', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ provider, settings })
+          });
+          
+          if (!response.ok) {
+            const error = await response.json();
+            throw new Error(error.error || 'Failed to save configuration');
+          }
+          
+          const savedConfig = await response.json();
+          document.getElementById('currentConfig').textContent = JSON.stringify(savedConfig, null, 2);
+          showStatus('Configuration saved successfully!', 'success');
+        } catch (error) {
+          console.error('Save error:', error);
+          showStatus(error.message || 'Failed to save configuration', 'error');
+        }
+      }
+
+      async function testBooking() {
+        try {
+          const response = await fetch('/api/booking/initiate', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+              service: 'Test Service',
+              stylist: 'Test Stylist',
+              preferredDate: '2024-01-15',
+              preferredTime: '14:00'
+            })
+          });
+          
+          const result = await response.json();
+          showStatus(`Test booking result: Action = ${result.action}, Provider = ${result.provider || 'none'}`, 'success');
+          
+          if (result.action === 'whatsapp' && result.message) {
+            console.log('WhatsApp message preview:', result.message);
+          }
+        } catch (error) {
+          console.error('Test error:', error);
+          showStatus('Test booking failed', 'error');
+        }
+      }
+
+      function showStatus(message, type) {
+        const status = document.getElementById('status');
+        status.textContent = message;
+        status.className = type === 'success' ? 'status-success' : 'status-error';
+        status.style.display = 'block';
+        
+        if (type === 'success') {
+          setTimeout(() => {
+            status.style.display = 'none';
+          }, 3000);
+        }
+      }
+    </script>
+  </body>
+</html>
