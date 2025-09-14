@@ -19,5 +19,37 @@ Endpoints: `/health`, `/info`, and static `/` from `public/`.
 - docker build -t hairstyleportal:dev .
 - docker run -p 3008:3008 hairstyleportal:dev
 
+## Design System
+
+The application uses a consistent design system with CSS variables for maintainable styling.
+
+### Design Tokens
+
+**Colors:**
+- Primary: `--color-primary` (#0d9488, teal-600) - Main brand color for links and accents
+- Accent: `--color-accent` (#f9a8d4, soft pink) - Secondary color for highlights and focus states
+- Neutrals: `--color-neutral-*` - Grayscale palette from 50 (lightest) to 900 (darkest)
+
+**Typography:**
+- Display Font: `--font-family-display` - Playfair Display for headings
+- Body Font: `--font-family-body` - Inter for body text with system font fallbacks
+- Type Scale: Responsive sizing with clamp() functions for mobile-first approach
+
+**Spacing:**
+- Scale: `--space-1` (0.25rem) to `--space-8` (2rem)
+- Used consistently for margins, padding, and layout gaps
+
+**Other:**
+- Border radius: `--radius-sm` to `--radius-xl`
+- Shadows: `--shadow-sm` and `--shadow-base` for subtle depth
+- All tokens defined in `public/styles.css`
+
+### Features
+- Mobile-first responsive design
+- Accessible focus states and color contrast
+- Font loading optimization with `font-display: swap`
+- Reduced motion support for accessibility
+- Under 4KB CSS file size
+
 ## CI
 A minimal GitHub Actions workflow can be added under `.github/workflows/ci.yml` to run basic checks.
