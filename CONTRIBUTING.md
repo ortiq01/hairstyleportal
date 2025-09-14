@@ -12,10 +12,11 @@
 - Install: `npm install`
 - Run: `npm start`
 - Test: `npm test`
+ - Lint: `npm run lint` (auto-fix: `npm run lint:fix`)
 
 ## Tests
 - Jest + Supertest lives under `tests/`.
-- CI runs tests on push/PR via GitHub Actions.
+- CI runs lint and tests on push/PR via GitHub Actions.
 
 ## Releases
 - Tag versions using semver: `git tag -a vX.Y.Z -m "vX.Y.Z: summary"`
