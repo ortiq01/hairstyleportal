@@ -6,6 +6,13 @@ const os = require('os');
 const app = express();
 const PORT = process.env.PORT || 3008;
 
+// Basic configuration for reviews
+const config = {
+  reviews: {
+    autoApprove: process.env.AUTO_APPROVE_REVIEWS !== 'false' // Default to true, set to false via env var
+  }
+};
+
 app.use(express.json());
 app.use(express.static('public'));
 
@@ -55,7 +62,10 @@ app.get('/info', async (_req, res) => {
     node: process.version,
     hostname: os.hostname(),
     cwd: process.cwd(),
-    dataDir
+    dataDir,
+    config: {
+      reviews: config.reviews
+    }
   });
 });
 
@@ -140,7 +150,7 @@ app.post('/api/reviews', async (req, res) => {
     rating: Math.round(rating), // Ensure integer rating
     text: text.trim(),
     createdAt: new Date().toISOString(),
-    approved: true // Auto-approve by default, can be changed via config
+    approved: config.reviews.autoApprove // Use config setting
   };
   
   reviews.push(review);

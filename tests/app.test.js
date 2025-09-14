@@ -1,5 +1,6 @@
 const request = require('supertest');
 const path = require('path');
+const fs = require('fs').promises;
 
 // Use ephemeral temp data dir for tests
 process.env.DATA_DIR = path.join(__dirname, '.tmp-data');
@@ -8,6 +9,16 @@ process.env.NODE_ENV = 'test';
 const app = require('..');
 
 describe('hairstyleportal API', () => {
+  beforeEach(async () => {
+    // Clear test data before each test
+    const dataDir = process.env.DATA_DIR;
+    const stylesFile = path.join(dataDir, 'styles.json');
+    const reviewsFile = path.join(dataDir, 'reviews.json');
+    
+    await fs.mkdir(dataDir, { recursive: true });
+    await fs.writeFile(stylesFile, '[]', 'utf8');
+    await fs.writeFile(reviewsFile, '[]', 'utf8');
+  });
   it('GET /health -> OK', async () => {
     const res = await request(app).get('/health');
     expect(res.status).toBe(200);
@@ -19,6 +30,9 @@ describe('hairstyleportal API', () => {
     expect(res.status).toBe(200);
     expect(res.body).toHaveProperty('name', 'hairstyleportal');
     expect(res.body).toHaveProperty('dataDir');
+    expect(res.body).toHaveProperty('config');
+    expect(res.body.config).toHaveProperty('reviews');
+    expect(res.body.config.reviews).toHaveProperty('autoApprove', true);
   });
 
   it('CRUD /api/styles', async () => {
