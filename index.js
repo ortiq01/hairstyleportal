@@ -11,6 +11,7 @@ app.use(express.static('public'));
 
 const dataDir = process.env.DATA_DIR || path.join(__dirname, 'data');
 const dataFile = path.join(dataDir, 'styles.json');
+const productsFile = path.join(dataDir, 'products.json');
 
 async function ensureDataFile() {
   await fs.mkdir(dataDir, { recursive: true });
@@ -27,6 +28,15 @@ async function readStyles() {
 
 async function writeStyles(arr) {
   await fs.writeFile(dataFile, JSON.stringify(arr, null, 2), 'utf8');
+}
+
+async function readProducts() {
+  try { 
+    const txt = await fs.readFile(productsFile, 'utf8');
+    return JSON.parse(txt || '[]');
+  } catch {
+    return [];
+  }
 }
 
 function makeId() {
@@ -80,6 +90,11 @@ app.delete('/api/styles/:id', async (req, res) => {
   if (next.length === styles.length) return res.status(404).json({ error: 'not found' });
   await writeStyles(next);
   res.status(204).send();
+});
+
+app.get('/api/products', async (_req, res) => {
+  const products = await readProducts();
+  res.json(products);
 });
 
 if (process.env.NODE_ENV !== 'test') {

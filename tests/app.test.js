@@ -21,6 +21,21 @@ describe('hairstyleportal API', () => {
     expect(res.body).toHaveProperty('dataDir');
   });
 
+  it('GET /api/products -> array', async () => {
+    const res = await request(app).get('/api/products');
+    expect(res.status).toBe(200);
+    expect(Array.isArray(res.body)).toBe(true);
+    if (res.body.length > 0) {
+      const product = res.body[0];
+      expect(product).toHaveProperty('id');
+      expect(product).toHaveProperty('name');
+      expect(product).toHaveProperty('brand');
+      expect(product).toHaveProperty('price');
+      expect(product).toHaveProperty('stock');
+      expect(product).toHaveProperty('checkoutUrl');
+    }
+  });
+
   it('CRUD /api/styles', async () => {
     const create = await request(app)
       .post('/api/styles')
