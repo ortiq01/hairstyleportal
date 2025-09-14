@@ -82,6 +82,10 @@ app.delete('/api/styles/:id', async (req, res) => {
   res.status(204).send();
 });
 
-app.listen(PORT, () => {
-  console.log(`hairstyleportal listening on http://localhost:${PORT}`);
-});
+if (process.env.NODE_ENV !== 'test') {
+  app.listen(PORT, () => {
+    console.log(`hairstyleportal listening on http://localhost:${PORT}`);
+  });
+}
+
+module.exports = app;
