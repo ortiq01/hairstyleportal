@@ -1,42 +1,252 @@
 <!doctype html>
-<html>
+<html lang="en">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Hairstyle Portal</title>
     <style>
-      body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,Noto Sans,sans-serif; margin:40px;}
-      .card{max-width:720px;margin:auto;padding:24px;border:1px solid #e5e7eb;border-radius:12px;}
-      h1{margin:0 0 8px 0}
-      .muted{color:#6b7280}
-      .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin-top:20px}
-      .tile{border:1px solid #e5e7eb;border-radius:8px;padding:12px}
-      a{color:#1d4ed8;text-decoration:none}
-      a:hover{text-decoration:underline}
-      code{background:#f3f4f6;padding:2px 6px;border-radius:4px}
+      /* Reset and base styles */
+      * {
+        box-sizing: border-box;
+      }
+      
+      body {
+        font-family: system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, sans-serif;
+        margin: 0;
+        padding: 0;
+        line-height: 1.6;
+        background-color: #f9fafb;
+      }
+
+      /* Skip link for accessibility */
+      .skip-link {
+        position: absolute;
+        top: -40px;
+        left: 6px;
+        background: #000;
+        color: #fff;
+        padding: 8px;
+        text-decoration: none;
+        border-radius: 4px;
+        z-index: 1000;
+      }
+      
+      .skip-link:focus {
+        top: 6px;
+      }
+
+      /* Container with responsive padding */
+      .container {
+        max-width: 1280px;
+        margin: 0 auto;
+        padding: 1rem;
+      }
+
+      /* Header styles */
+      header {
+        background: #fff;
+        border-bottom: 1px solid #e5e7eb;
+        padding: 1rem 0;
+      }
+
+      header .container {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+      }
+
+      h1 {
+        margin: 0;
+        font-size: 1.875rem;
+        font-weight: 700;
+        color: #111827;
+      }
+
+      .subtitle {
+        color: #6b7280;
+        margin: 0;
+      }
+
+      /* Main content */
+      main {
+        flex: 1;
+        padding: 2rem 0;
+      }
+
+      /* Grid layout - mobile first */
+      .grid {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 1rem;
+        margin-top: 1.5rem;
+      }
+
+      .tile {
+        background: #fff;
+        border: 1px solid #e5e7eb;
+        border-radius: 8px;
+        padding: 1.5rem;
+        transition: box-shadow 0.2s ease;
+      }
+
+      .tile:hover {
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+      }
+
+      .tile h2 {
+        margin: 0 0 0.5rem 0;
+        font-size: 1.125rem;
+        font-weight: 600;
+        color: #111827;
+      }
+
+      /* Links and interactive elements */
+      a {
+        color: #1d4ed8;
+        text-decoration: none;
+      }
+
+      a:hover {
+        text-decoration: underline;
+      }
+
+      a:focus {
+        outline: 2px solid #1d4ed8;
+        outline-offset: 2px;
+      }
+
+      code {
+        background: #f3f4f6;
+        padding: 0.25rem 0.5rem;
+        border-radius: 0.25rem;
+        font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+        font-size: 0.875rem;
+      }
+
+      /* Footer */
+      footer {
+        background: #fff;
+        border-top: 1px solid #e5e7eb;
+        padding: 1rem 0;
+        margin-top: 2rem;
+      }
+
+      .footer-text {
+        color: #6b7280;
+        margin: 0;
+        font-size: 0.875rem;
+      }
+
+      /* Responsive breakpoints */
+      /* Tablet - 640px */
+      @media (min-width: 640px) {
+        .container {
+          padding: 1.5rem;
+        }
+
+        .grid {
+          grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+          gap: 1.5rem;
+        }
+
+        header .container {
+          flex-direction: row;
+          justify-content: space-between;
+          align-items: center;
+        }
+
+        h1 {
+          font-size: 2.25rem;
+        }
+      }
+
+      /* Desktop - 960px */
+      @media (min-width: 960px) {
+        .container {
+          padding: 2rem;
+        }
+
+        .grid {
+          grid-template-columns: repeat(3, 1fr);
+          gap: 2rem;
+        }
+
+        main {
+          padding: 3rem 0;
+        }
+      }
+
+      /* Large desktop - 1280px */
+      @media (min-width: 1280px) {
+        .grid {
+          grid-template-columns: repeat(3, 1fr);
+          max-width: 1200px;
+          margin-left: auto;
+          margin-right: auto;
+        }
+      }
+
+      /* Accessibility and print styles */
+      @media (prefers-reduced-motion: reduce) {
+        .tile {
+          transition: none;
+        }
+      }
+
+      /* High contrast mode support */
+      @media (prefers-contrast: high) {
+        .tile {
+          border-width: 2px;
+        }
+      }
     </style>
   </head>
   <body>
-    <div class="card">
-      <h1>Hairstyle Portal</h1>
-      <p class="muted">Simple Node.js/Express app served by PM2.</p>
-
-      <div class="grid">
-        <div class="tile">
-          <strong>Health</strong>
-          <div><a href="/health">/health</a></div>
-        </div>
-        <div class="tile">
-          <strong>Info</strong>
-          <div><a href="/info">/info</a></div>
-        </div>
-        <div class="tile">
-          <strong>Env</strong>
-          <div><code>PORT=3008</code></div>
-        </div>
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+    
+    <header>
+      <div class="container">
+        <h1>Hairstyle Portal</h1>
+        <p class="subtitle">Simple Node.js/Express app served by PM2</p>
       </div>
+    </header>
 
-      <p class="muted" style="margin-top:16px">Edit <code>public/index.html</code> to customize.</p>
-    </div>
+    <main id="main-content">
+      <div class="container">
+        <section aria-labelledby="services-heading">
+          <h2 id="services-heading" style="visibility: hidden; height: 0; margin: 0;">Available Services</h2>
+          
+          <div class="grid">
+            <div class="tile">
+              <h2>Health Check</h2>
+              <p>Monitor application health status</p>
+              <a href="/health" aria-describedby="health-desc">Check Health</a>
+              <div id="health-desc" style="display: none;">Returns OK if the application is running properly</div>
+            </div>
+            
+            <div class="tile">
+              <h2>System Info</h2>
+              <p>View application and system information</p>
+              <a href="/info" aria-describedby="info-desc">View Info</a>
+              <div id="info-desc" style="display: none;">Shows Node.js version, hostname, and configuration details</div>
+            </div>
+            
+            <div class="tile">
+              <h2>Environment</h2>
+              <p>Current configuration settings</p>
+              <code>PORT=3008</code>
+            </div>
+          </div>
+        </section>
+      </div>
+    </main>
+
+    <footer>
+      <div class="container">
+        <p class="footer-text">
+          Edit <code>public/index.html</code> to customize this portal.
+        </p>
+      </div>
+    </footer>
   </body>
 </html>
