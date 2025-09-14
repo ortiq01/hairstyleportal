@@ -14,7 +14,9 @@ const dataFile = path.join(dataDir, 'styles.json');
 
 async function ensureDataFile() {
   await fs.mkdir(dataDir, { recursive: true });
-  try { await fs.access(dataFile); } catch {
+  try {
+    await fs.access(dataFile);
+  } catch {
     await fs.writeFile(dataFile, '[]', 'utf8');
   }
 }
@@ -22,7 +24,11 @@ async function ensureDataFile() {
 async function readStyles() {
   await ensureDataFile();
   const txt = await fs.readFile(dataFile, 'utf8');
-  try { return JSON.parse(txt || '[]'); } catch { return []; }
+  try {
+    return JSON.parse(txt || '[]');
+  } catch {
+    return [];
+  }
 }
 
 async function writeStyles(arr) {
@@ -41,7 +47,7 @@ app.get('/info', async (_req, res) => {
     node: process.version,
     hostname: os.hostname(),
     cwd: process.cwd(),
-    dataDir
+    dataDir,
   });
 });
 
@@ -56,7 +62,12 @@ app.post('/api/styles', async (req, res) => {
     return res.status(400).json({ error: 'name is required' });
   }
   const styles = await readStyles();
-  const item = { id: makeId(), name, description: description || '', imageUrl: imageUrl || '' };
+  const item = {
+    id: makeId(),
+    name,
+    description: description || '',
+    imageUrl: imageUrl || '',
+  };
   styles.push(item);
   await writeStyles(styles);
   res.status(201).json(item);
@@ -77,7 +88,8 @@ app.delete('/api/styles/:id', async (req, res) => {
   const { id } = req.params;
   const styles = await readStyles();
   const next = styles.filter(s => s.id !== id);
-  if (next.length === styles.length) return res.status(404).json({ error: 'not found' });
+  if (next.length === styles.length)
+    return res.status(404).json({ error: 'not found' });
   await writeStyles(next);
   res.status(204).send();
 });
