@@ -11,6 +11,7 @@ app.use(express.static('public'));
 
 const dataDir = process.env.DATA_DIR || path.join(__dirname, 'data');
 const dataFile = path.join(dataDir, 'styles.json');
+const configFile = path.join(dataDir, 'booking-config.json');
 
 async function ensureDataFile() {
   await fs.mkdir(dataDir, { recursive: true });
@@ -27,6 +28,24 @@ async function readStyles() {
 
 async function writeStyles(arr) {
   await fs.writeFile(dataFile, JSON.stringify(arr, null, 2), 'utf8');
+}
+
+async function readBookingConfig() {
+  await ensureDataFile();
+  try {
+    const txt = await fs.readFile(configFile, 'utf8');
+    return JSON.parse(txt || '{}');
+  } catch {
+    // Return default config
+    return {
+      provider: null, // 'salonized', 'treatwell', 'whatsapp', or null
+      settings: {}
+    };
+  }
+}
+
+async function writeBookingConfig(config) {
+  await fs.writeFile(configFile, JSON.stringify(config, null, 2), 'utf8');
 }
 
 function makeId() {
@@ -81,6 +100,88 @@ app.delete('/api/styles/:id', async (req, res) => {
   await writeStyles(next);
   res.status(204).send();
 });
+
+// Booking configuration endpoints
+app.get('/api/booking/config', async (_req, res) => {
+  const config = await readBookingConfig();
+  res.json(config);
+});
+
+app.post('/api/booking/config', async (req, res) => {
+  const { provider, settings } = req.body || {};
+  
+  // Validate provider
+  const validProviders = [null, 'salonized', 'treatwell', 'whatsapp'];
+  if (!validProviders.includes(provider)) {
+    return res.status(400).json({ error: 'Invalid provider. Must be one of: salonized, treatwell, whatsapp, or null' });
+  }
+  
+  const config = { provider, settings: settings || {} };
+  await writeBookingConfig(config);
+  res.json(config);
+});
+
+// Booking initiation endpoint
+app.post('/api/booking/initiate', async (req, res) => {
+  const config = await readBookingConfig();
+  const { service, stylist, preferredDate, preferredTime } = req.body || {};
+  
+  if (!config.provider) {
+    return res.json({
+      action: 'fallback',
+      message: 'No booking provider configured. Please contact us directly.',
+      fallbackUrl: '#contact'
+    });
+  }
+  
+  switch (config.provider) {
+    case 'salonized':
+      return res.json({
+        action: 'embed',
+        provider: 'salonized',
+        embedScript: config.settings.embedScript || '',
+        params: { service, stylist, preferredDate, preferredTime }
+      });
+      
+    case 'treatwell':
+      return res.json({
+        action: 'link',
+        provider: 'treatwell',
+        url: config.settings.bookingUrl || 'https://www.treatwell.com',
+        params: { service, stylist, preferredDate, preferredTime }
+      });
+      
+    case 'whatsapp':
+      const phone = config.settings.phoneNumber || '';
+      const message = generateWhatsAppMessage(service, stylist, preferredDate, preferredTime);
+      return res.json({
+        action: 'whatsapp',
+        provider: 'whatsapp',
+        url: `https://wa.me/${phone.replace(/[^0-9]/g, '')}?text=${encodeURIComponent(message)}`,
+        message
+      });
+      
+    default:
+      return res.json({
+        action: 'fallback',
+        message: 'Booking provider not properly configured.',
+        fallbackUrl: '#contact'
+      });
+  }
+});
+
+function generateWhatsAppMessage(service, stylist, preferredDate, preferredTime) {
+  let message = 'Hi! I would like to book an appointment.';
+  
+  if (service) message += `\n\nService: ${service}`;
+  if (stylist) message += `\nStylist: ${stylist}`;
+  if (preferredDate) message += `\nPreferred Date: ${preferredDate}`;
+  if (preferredTime) message += `\nPreferred Time: ${preferredTime}`;
+  
+  message += '\n\nPlease let me know if this works for you or suggest alternative times. Thank you!';
+  
+  return message;
+}
 
 if (process.env.NODE_ENV !== 'test') {
   app.listen(PORT, () => {
