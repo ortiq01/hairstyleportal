@@ -26,6 +26,10 @@
 ## Pull Requests
 - Draft early; convert to Ready for Review when the checklist is green.
 - Reference the issue number in the description.
+	- Prefer GitHub closing keywords to automatically close issues on merge.
+		- Examples: `Closes #123`, `Fixes #456`, `Resolves #789`.
+		- Multiple: `Closes #12, fixes #34`.
+		- If only partial work is done, use non-closing phrasing: `Refs #123`.
 - Required checklist before marking Ready:
 	- CI green (lint + tests)
 	- Screenshots for UI changes (desktop + mobile)
@@ -34,3 +38,4 @@
 	- SEO unaffected or improved (metadata/JSON-LD)
 	- Docs updated if behavior/config changed
 	- No secrets committed; `.env` usage respected
+ 	- Uses closing keywords to auto-close any completed issue(s)
