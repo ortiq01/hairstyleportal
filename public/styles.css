@@ -186,3 +186,120 @@ code {
     transition-duration: 0.01ms !important;
   }
 }
+
+/* --- App Sections: Hero, Booking, Quiz --- */
+
+/* Layout helpers */
+.container {
+  max-width: 72rem;
+  margin: 0 auto;
+  padding: 0 var(--space-4);
+}
+
+header {
+  margin: 0 0 var(--space-8);
+}
+
+.subtitle {
+  color: var(--color-text-muted);
+  font-size: var(--font-size-sm);
+}
+
+.skip-link {
+  position: absolute;
+  left: -9999px;
+  top: auto;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+.skip-link:focus {
+  left: var(--space-4);
+  top: var(--space-4);
+  width: auto;
+  height: auto;
+  background: var(--color-background);
+  color: var(--color-text);
+  border: 2px solid var(--color-accent);
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-base);
+  z-index: 1000;
+}
+
+/* Hero */
+.hero {
+  position: relative;
+  height: 60vh;
+  min-height: 28rem;
+  background: url('/images/hero-bg.svg') center/cover no-repeat, linear-gradient(135deg, rgba(13,148,136,0.25), rgba(249,168,212,0.25));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  overflow: hidden;
+}
+.hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.15);
+}
+.hero-content {
+  position: relative;
+  z-index: 1;
+  max-width: 50rem;
+  padding: 0 var(--space-4);
+}
+.hero h1 { margin-bottom: var(--space-3); }
+.hero-tagline { margin-bottom: var(--space-6); color: var(--color-neutral-600); font-weight: 500; }
+.hero-ctas { display: flex; gap: var(--space-3); justify-content: center; flex-wrap: wrap; }
+
+.cta-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  padding: 0.875rem 1.5rem;
+  font-weight: 600;
+  border-radius: 999px;
+  border: 2px solid transparent;
+  cursor: pointer;
+  transition: transform .15s ease, box-shadow .15s ease, background .15s ease, border-color .15s ease;
+}
+.cta-primary { background: var(--color-primary); color: #fff; box-shadow: 0 8px 24px rgb(13 148 136 / 0.25); }
+.cta-primary:hover, .cta-primary:focus { transform: translateY(-1px); background: var(--color-primary-dark); }
+.cta-secondary { background: var(--color-surface); color: var(--color-text); border-color: var(--color-border); }
+.cta-secondary:hover, .cta-secondary:focus { border-color: var(--color-accent); box-shadow: var(--shadow-sm); }
+.cta-button:focus-visible { outline: 2px solid var(--color-accent); outline-offset: 3px; }
+
+/* Generic section wrapper */
+.section { padding: var(--space-8) var(--space-4); max-width: 72rem; margin: 0 auto; }
+.section h2 { text-align: center; margin-bottom: var(--space-6); }
+
+/* Booking */
+.contact-section { background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius-xl); }
+.booking-form { max-width: 40rem; margin: 0 auto; background: var(--color-background); padding: var(--space-6); border-radius: var(--radius-xl); box-shadow: var(--shadow-base); }
+.form-group { margin-bottom: var(--space-4); }
+.form-group label { display: block; margin-bottom: var(--space-2); font-weight: 600; }
+.form-group input, .form-group select, .form-group textarea { width: 100%; padding: var(--space-3); border: 1px solid var(--color-border); border-radius: var(--radius-base); font: inherit; color: var(--color-text); background: var(--color-background); }
+.form-group input:focus, .form-group select:focus, .form-group textarea:focus { outline: 2px solid var(--color-accent); outline-offset: 2px; }
+
+/* Quiz */
+.quiz-section { background: linear-gradient(135deg, rgba(13,148,136,0.08), rgba(249,168,212,0.1)); border: 1px solid var(--color-border); border-radius: var(--radius-xl); }
+.quiz-container { max-width: 50rem; margin: 0 auto; padding: var(--space-6); background: rgba(255,255,255,0.6); backdrop-filter: blur(4px); border-radius: var(--radius-xl); }
+.quiz-question { margin-bottom: var(--space-6); }
+.quiz-question h3 { margin-bottom: var(--space-3); font-size: var(--font-size-xl); }
+.quiz-options { display: grid; gap: var(--space-3); grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr)); }
+.quiz-option { padding: var(--space-4); background: var(--color-background); border: 1px solid var(--color-border); border-radius: var(--radius-base); cursor: pointer; transition: border-color .15s ease, box-shadow .15s ease, background .15s ease; }
+.quiz-option:hover, .quiz-option:focus { border-color: var(--color-accent); box-shadow: var(--shadow-sm); }
+.quiz-option.selected { background: var(--color-accent); color: #111827; border-color: var(--color-accent); }
+
+footer { margin-top: var(--space-8); }
+.footer-text { color: var(--color-text-muted); }
+
+/* Responsive tweaks */
+@media (max-width: 768px) {
+  .hero { height: 42vh; min-height: 18rem; }
+  .booking-form { padding: var(--space-4); }
+  .quiz-container { padding: var(--space-4); }
+}

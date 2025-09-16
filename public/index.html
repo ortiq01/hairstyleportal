@@ -18,6 +18,131 @@
         <p class="subtitle">Simple Node.js/Express app served by PM2</p>
       </div>
     </header>
+
+    <!-- Hero Section -->
+    <section class="hero" aria-label="Welcome to Hairstyle Portal">
+      <div class="hero-content">
+        <h1>Hairstyle Portal</h1>
+        <p class="hero-tagline">Discover your perfect style and book your transformation today</p>
+        <div class="hero-ctas">
+          <a href="#booking" class="cta-button cta-primary" aria-label="Book your appointment now">
+            Book Now
+          </a>
+          <button id="quiz-btn" class="cta-button cta-secondary" aria-label="Take style quiz to find your perfect look">
+            Style Quiz
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Contact/Booking Section -->
+    <section id="booking" class="section contact-section" aria-labelledby="booking-title">
+      <h2 id="booking-title">Book Your Appointment</h2>
+      <div class="booking-form">
+        <form id="booking-form" aria-label="Appointment booking form">
+          <div class="form-group">
+            <label for="name">Full Name</label>
+            <input type="text" id="name" name="name" required aria-describedby="name-help">
+            <small id="name-help" class="muted">Enter your full name for the appointment</small>
+          </div>
+          
+          <div class="form-group">
+            <label for="email">Email</label>
+            <input type="email" id="email" name="email" required aria-describedby="email-help">
+            <small id="email-help" class="muted">We'll send appointment confirmation to this email</small>
+          </div>
+          
+          <div class="form-group">
+            <label for="phone">Phone Number</label>
+            <input type="tel" id="phone" name="phone" required aria-describedby="phone-help">
+            <small id="phone-help" class="muted">Contact number for appointment updates</small>
+          </div>
+          
+          <div class="form-group">
+            <label for="service">Service</label>
+            <select id="service" name="service" required>
+              <option value="">Select a service</option>
+              <option value="cut">Haircut</option>
+              <option value="color">Hair Coloring</option>
+              <option value="style">Hair Styling</option>
+              <option value="treatment">Hair Treatment</option>
+              <option value="consultation">Style Consultation</option>
+            </select>
+          </div>
+          
+          <div class="form-group">
+            <label for="date">Preferred Date</label>
+            <input type="date" id="date" name="date" required>
+          </div>
+          
+          <div class="form-group">
+            <label for="notes">Additional Notes</label>
+            <textarea id="notes" name="notes" rows="4" placeholder="Any specific requests or hair concerns..."></textarea>
+          </div>
+          
+          <button type="submit" class="cta-button cta-primary" style="width: 100%;">
+            Submit Booking Request
+          </button>
+        </form>
+      </div>
+    </section>
+
+    <!-- Quiz Section -->
+    <section id="quiz" class="section quiz-section" aria-labelledby="quiz-title" style="display: none;">
+      <h2 id="quiz-title">Find Your Perfect Style</h2>
+      <div class="quiz-container">
+        <div class="quiz-question">
+          <h3>What's your hair type?</h3>
+          <div class="quiz-options">
+            <div class="quiz-option" data-value="straight" role="button" tabindex="0" aria-pressed="false">
+              <strong>Straight</strong><br>
+              Naturally straight, minimal wave
+            </div>
+            <div class="quiz-option" data-value="wavy" role="button" tabindex="0" aria-pressed="false">
+              <strong>Wavy</strong><br>
+              Natural waves and texture
+            </div>
+            <div class="quiz-option" data-value="curly" role="button" tabindex="0" aria-pressed="false">
+              <strong>Curly</strong><br>
+              Defined curls and spirals
+            </div>
+            <div class="quiz-option" data-value="coily" role="button" tabindex="0" aria-pressed="false">
+              <strong>Coily</strong><br>
+              Tight coils and kinks
+            </div>
+          </div>
+        </div>
+        
+        <div class="quiz-question">
+          <h3>What's your lifestyle?</h3>
+          <div class="quiz-options">
+            <div class="quiz-option" data-value="low-maintenance" role="button" tabindex="0" aria-pressed="false">
+              <strong>Low Maintenance</strong><br>
+              Minimal styling time
+            </div>
+            <div class="quiz-option" data-value="moderate" role="button" tabindex="0" aria-pressed="false">
+              <strong>Moderate</strong><br>
+              Some daily styling
+            </div>
+            <div class="quiz-option" data-value="high-maintenance" role="button" tabindex="0" aria-pressed="false">
+              <strong>High Maintenance</strong><br>
+              Love detailed styling
+            </div>
+          </div>
+        </div>
+        
+        <button id="quiz-submit" class="cta-button cta-primary" style="margin-top: 2rem;">
+          Get My Style Recommendation
+        </button>
+        
+        <div id="quiz-results" style="display: none; margin-top: 2rem;">
+          <h3>Your Perfect Style:</h3>
+          <div id="style-recommendation" style="font-size: 1.2rem; margin-top: 1rem;"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Existing Services Section -->
     <main id="main-content">
       <div class="container">
         <section aria-labelledby="services-heading">
@@ -55,5 +180,73 @@
         </p>
       </div>
     </footer>
+
+    <script>
+      // Quiz toggle
+      document.getElementById('quiz-btn').addEventListener('click', function() {
+        const quizSection = document.getElementById('quiz');
+        const isHidden = quizSection.style.display === 'none' || !quizSection.style.display;
+        quizSection.style.display = isHidden ? 'block' : 'none';
+        if (!isHidden) return;
+        quizSection.scrollIntoView({ behavior: 'smooth' });
+      });
+
+      // Quiz option selection
+      document.querySelectorAll('.quiz-option').forEach(option => {
+        option.addEventListener('click', function() {
+          const question = this.closest('.quiz-question');
+          question.querySelectorAll('.quiz-option').forEach(opt => {
+            opt.classList.remove('selected');
+            opt.setAttribute('aria-pressed', 'false');
+          });
+          this.classList.add('selected');
+          this.setAttribute('aria-pressed', 'true');
+        });
+
+        option.addEventListener('keydown', function(e) {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            this.click();
+          }
+        });
+      });
+
+      // Quiz submission
+      document.getElementById('quiz-submit').addEventListener('click', function() {
+        const selectedOptions = document.querySelectorAll('.quiz-option.selected');
+        if (selectedOptions.length < 2) {
+          alert('Please answer all questions to get your style recommendation.');
+          return;
+        }
+
+        const hairType = document.querySelector('.quiz-question:nth-child(1) .quiz-option.selected')?.dataset.value;
+        const lifestyle = document.querySelector('.quiz-question:nth-child(2) .quiz-option.selected')?.dataset.value;
+
+        let recommendation = '';
+        if (hairType === 'straight' && lifestyle === 'low-maintenance') {
+          recommendation = 'Classic Bob - Clean lines that work with your natural texture and require minimal styling.';
+        } else if (hairType === 'wavy' && lifestyle === 'moderate') {
+          recommendation = 'Layered Lob - Enhances your natural waves with versatile styling options.';
+        } else if (hairType === 'curly' && lifestyle === 'low-maintenance') {
+          recommendation = 'Curly Shag - Embraces your curls with low-maintenance layers for natural movement.';
+        } else if (hairType === 'coily' && lifestyle === 'high-maintenance') {
+          recommendation = 'Defined Curl Pattern - Structured cut that showcases your natural texture with styling versatility.';
+        } else {
+          recommendation = `Based on your ${hairType} hair and ${lifestyle?.replace('-', ' ')} lifestyle, we recommend a consultation to find your perfect custom style.`;
+        }
+
+        document.getElementById('style-recommendation').textContent = recommendation;
+        document.getElementById('quiz-results').style.display = 'block';
+      });
+
+      // Booking form submission
+      document.getElementById('booking-form').addEventListener('submit', function(e) {
+        e.preventDefault();
+        alert('Thank you for your booking request! We will contact you within 24 hours to confirm your appointment.');
+      });
+
+      // Set minimum date to today
+      document.getElementById('date').min = new Date().toISOString().split('T')[0];
+    </script>
   </body>
-</html>
+  </html>

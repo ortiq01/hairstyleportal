@@ -16,6 +16,9 @@ yarn-error.log*
 data/
 tests/.tmp-data/
 
+# Test temp data
+tests/.tmp-data/
+
 # Build outputs
 build/
 dist/
