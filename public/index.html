@@ -145,6 +145,11 @@
     <!-- Existing Services Section -->
     <main id="main-content">
       <div class="container">
+        <section aria-labelledby="products-heading" class="section" style="padding-top:0">
+          <h2 id="products-heading">Recommended Products</h2>
+          <div id="products-grid" class="grid" aria-live="polite"></div>
+        </section>
+
         <section aria-labelledby="services-heading">
           <h2 id="services-heading" style="visibility: hidden; height: 0; margin: 0;">Available Services</h2>
           
@@ -247,6 +252,48 @@
 
       // Set minimum date to today
       document.getElementById('date').min = new Date().toISOString().split('T')[0];
+
+      // Products rendering
+      async function renderProducts() {
+        const grid = document.getElementById('products-grid');
+        if (!grid) return;
+        try {
+          const res = await fetch('/api/products');
+          if (!res.ok) throw new Error('Failed to load products');
+          const items = await res.json();
+          if (!Array.isArray(items) || items.length === 0) {
+            grid.innerHTML = '<p class="muted">Products coming soon.</p>';
+            return;
+          }
+          grid.innerHTML = items.map(p => {
+            const safe = {
+              brand: (p.brand||'').toString(),
+              name: (p.name||'').toString(),
+              price: typeof p.price === 'number' ? p.price.toFixed(2) : (p.price||''),
+              stock: typeof p.stock === 'number' ? p.stock : (p.stock||'')
+            };
+            const inStock = Number(safe.stock) > 0;
+            const buy = p.url ? `<a href="${p.url}" class="cta-button cta-secondary" target="_blank" rel="noopener">Buy</a>` : '';
+            return `
+              <div class="tile" role="article">
+                <div style="display:flex;justify-content:space-between;align-items:center;gap:8px">
+                  <div>
+                    <strong>${safe.brand}</strong>
+                    <div>${safe.name}</div>
+                  </div>
+                  <div style="text-align:right">
+                    <div>€ ${safe.price}</div>
+                    <div class="muted">${inStock ? `${safe.stock} in stock` : 'Out of stock'}</div>
+                  </div>
+                </div>
+                <div class="mt-4">${buy}</div>
+              </div>`;
+          }).join('');
+        } catch (e) {
+          grid.innerHTML = '<p class="muted">Could not load products.</p>';
+        }
+      }
+      renderProducts();
     </script>
   </body>
   </html>

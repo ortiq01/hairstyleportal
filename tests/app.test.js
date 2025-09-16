@@ -44,4 +44,10 @@ describe('hairstyleportal API', () => {
     const del = await request(app).delete(`/api/styles/${id}`);
     expect(del.status).toBe(204);
   });
+
+  it('GET /api/products -> array', async () => {
+    const res = await request(app).get('/api/products');
+    expect(res.status).toBe(200);
+    expect(Array.isArray(res.body)).toBe(true);
+  });
 });
