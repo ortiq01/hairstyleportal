@@ -25,3 +25,4 @@ dist/
 
 # Backups
 *.bak*
+tests/.tmp-data/
