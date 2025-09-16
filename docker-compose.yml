@@ -3,7 +3,7 @@ services:
     build: .
     image: hairstyleportal:latest
     ports:
-      - "3008:3008"
+      - "80:3008"
     environment:
       - NODE_ENV=production
       - PORT=3008

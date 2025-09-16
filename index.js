@@ -2,6 +2,7 @@ const express = require('express');
 const fs = require('fs').promises;
 const path = require('path');
 const os = require('os');
+const pkg = require('./package.json');
 
 const app = express();
 const PORT = process.env.PORT || 3008;
@@ -52,6 +53,7 @@ app.get('/health', (_req, res) => res.send('OK'));
 app.get('/info', async (_req, res) => {
   res.json({
     name: 'hairstyleportal',
+    version: pkg.version,
     node: process.version,
     hostname: os.hostname(),
     cwd: process.cwd(),
@@ -102,8 +104,8 @@ app.get('/api/products', async (_req, res) => {
 });
 
 if (process.env.NODE_ENV !== 'test') {
-  app.listen(PORT, () => {
-    console.log(`hairstyleportal listening on http://localhost:${PORT}`);
+  app.listen(PORT, '0.0.0.0', () => {
+    console.log(`hairstyleportal listening on http://0.0.0.0:${PORT}`);
   });
 }
 

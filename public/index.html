@@ -182,6 +182,7 @@
       <div class="container">
         <p class="footer-text">
           Edit <code>public/index.html</code> to customize this portal.
+          <span id="app-version" class="muted" style="margin-left:8px"></span>
         </p>
       </div>
     </footer>
@@ -250,7 +251,7 @@
         alert('Thank you for your booking request! We will contact you within 24 hours to confirm your appointment.');
       });
 
-      // Set minimum date to today
+  // Set minimum date to today
       document.getElementById('date').min = new Date().toISOString().split('T')[0];
 
       // Products rendering
@@ -294,6 +295,17 @@
         }
       }
       renderProducts();
+
+      // Load and display version
+      (async function showVersion(){
+        try {
+          const r = await fetch('/info');
+          if (!r.ok) return;
+          const j = await r.json();
+          const el = document.getElementById('app-version');
+          if (el && j.version) el.textContent = `v${j.version}`;
+        } catch {}
+      })();
     </script>
   </body>
   </html>
