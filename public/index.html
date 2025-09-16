@@ -1,5 +1,5 @@
 <!doctype html>
-<html>
+<html lang="en">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -10,26 +10,50 @@
     <link rel="stylesheet" href="styles.css">
   </head>
   <body>
-    <div class="card">
-      <h1>Hairstyle Portal</h1>
-      <p class="muted">Simple Node.js/Express app served by PM2.</p>
-
-      <div class="grid">
-        <div class="tile">
-          <strong>Health</strong>
-          <div><a href="/health">/health</a></div>
-        </div>
-        <div class="tile">
-          <strong>Info</strong>
-          <div><a href="/info">/info</a></div>
-        </div>
-        <div class="tile">
-          <strong>Env</strong>
-          <div><code>PORT=3008</code></div>
-        </div>
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+    
+    <header>
+      <div class="container">
+        <h1>Hairstyle Portal</h1>
+        <p class="subtitle">Simple Node.js/Express app served by PM2</p>
       </div>
+    </header>
+    <main id="main-content">
+      <div class="container">
+        <section aria-labelledby="services-heading">
+          <h2 id="services-heading" style="visibility: hidden; height: 0; margin: 0;">Available Services</h2>
+          
+          <div class="grid">
+            <div class="tile">
+              <h2>Health Check</h2>
+              <p>Monitor application health status</p>
+              <a href="/health" aria-describedby="health-desc">Check Health</a>
+              <div id="health-desc" style="display: none;">Returns OK if the application is running properly</div>
+            </div>
+            
+            <div class="tile">
+              <h2>System Info</h2>
+              <p>View application and system information</p>
+              <a href="/info" aria-describedby="info-desc">View Info</a>
+              <div id="info-desc" style="display: none;">Shows Node.js version, hostname, and configuration details</div>
+            </div>
+            
+            <div class="tile">
+              <h2>Environment</h2>
+              <p>Current configuration settings</p>
+              <code>PORT=3008</code>
+            </div>
+          </div>
+        </section>
+      </div>
+    </main>
 
-      <p class="muted mt-4">Edit <code>public/index.html</code> to customize.</p>
-    </div>
+    <footer>
+      <div class="container">
+        <p class="footer-text">
+          Edit <code>public/index.html</code> to customize this portal.
+        </p>
+      </div>
+    </footer>
   </body>
 </html>
