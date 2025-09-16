@@ -1,0 +1,62 @@
+[
+  {
+    "id": "prod1",
+    "name": "Professional Hair Dryer",
+    "brand": "SalonPro",
+    "price": 89.99,
+    "imageUrl": "https://images.unsplash.com/photo-1522338242992-e1a54906a8da?w=300&h=300&fit=crop",
+    "stock": 15,
+    "description": "Professional grade hair dryer with ionic technology",
+    "checkoutUrl": "https://example-store.com/checkout?product=prof-dryer-001"
+  },
+  {
+    "id": "prod2",
+    "name": "Ceramic Hair Straightener",
+    "brand": "StyleMaster",
+    "price": 124.50,
+    "imageUrl": "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=300&h=300&fit=crop",
+    "stock": 8,
+    "description": "Advanced ceramic plates for smooth, frizz-free styling",
+    "checkoutUrl": "https://example-store.com/checkout?product=ceramic-straightener-002"
+  },
+  {
+    "id": "prod3",
+    "name": "Volumizing Hair Mousse",
+    "brand": "VolumePlus",
+    "price": 18.99,
+    "imageUrl": "https://images.unsplash.com/photo-1556228578-8c89e6adf883?w=300&h=300&fit=crop",
+    "stock": 25,
+    "description": "Lightweight mousse for maximum volume and hold",
+    "checkoutUrl": "https://example-store.com/checkout?product=volume-mousse-003"
+  },
+  {
+    "id": "prod4",
+    "name": "Curling Iron Set",
+    "brand": "CurlMagic",
+    "price": 79.99,
+    "imageUrl": "https://images.unsplash.com/photo-1559599101-f09722fb4948?w=300&h=300&fit=crop",
+    "stock": 12,
+    "description": "Professional curling iron set with multiple barrel sizes",
+    "checkoutUrl": "https://example-store.com/checkout?product=curl-iron-set-004"
+  },
+  {
+    "id": "prod5",
+    "name": "Argan Oil Hair Serum",
+    "brand": "NaturalLux",
+    "price": 34.99,
+    "imageUrl": "https://images.unsplash.com/photo-1598300042247-d088f8ab3a91?w=300&h=300&fit=crop",
+    "stock": 20,
+    "description": "Premium argan oil serum for shine and nourishment",
+    "checkoutUrl": "https://example-store.com/checkout?product=argan-serum-005"
+  },
+  {
+    "id": "prod6",
+    "name": "Hair Cutting Scissors",
+    "brand": "ProfessionalCut",
+    "price": 156.00,
+    "imageUrl": "https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=300&h=300&fit=crop",
+    "stock": 5,
+    "description": "Professional grade hair cutting scissors, Japanese steel",
+    "checkoutUrl": "https://example-store.com/checkout?product=pro-scissors-006"
+  }
+]

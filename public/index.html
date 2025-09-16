@@ -14,6 +14,22 @@
       a{color:#1d4ed8;text-decoration:none}
       a:hover{text-decoration:underline}
       code{background:#f3f4f6;padding:2px 6px;border-radius:4px}
+      .products-section{max-width:1200px;margin:40px auto;padding:0 20px}
+      .products-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:20px;margin-top:20px}
+      .product-card{border:1px solid #e5e7eb;border-radius:12px;overflow:hidden;transition:box-shadow 0.2s,transform 0.2s}
+      .product-card:hover{box-shadow:0 4px 12px rgba(0,0,0,0.1);transform:translateY(-2px)}
+      .product-image{width:100%;height:200px;object-fit:cover;background:#f9fafb}
+      .product-info{padding:16px}
+      .product-brand{color:#6b7280;font-size:14px;margin:0 0 4px 0}
+      .product-name{font-size:18px;font-weight:600;margin:0 0 8px 0;color:#111827}
+      .product-description{color:#6b7280;font-size:14px;margin:0 0 12px 0;line-height:1.4}
+      .product-price{font-size:20px;font-weight:700;color:#059669;margin:0 0 8px 0}
+      .product-stock{font-size:14px;color:#6b7280;margin:0 0 16px 0}
+      .stock-low{color:#dc2626}
+      .stock-out{color:#dc2626;font-weight:600}
+      .buy-button{background:#1d4ed8;color:white;border:none;padding:12px 24px;border-radius:8px;font-size:16px;font-weight:600;cursor:pointer;width:100%;transition:background 0.2s}
+      .buy-button:hover{background:#1e40af}
+      .buy-button:disabled{background:#9ca3af;cursor:not-allowed}
     </style>
   </head>
   <body>
@@ -31,12 +47,72 @@
           <div><a href="/info">/info</a></div>
         </div>
         <div class="tile">
+          <strong>API</strong>
+          <div><a href="/api/products">/api/products</a></div>
+        </div>
+        <div class="tile">
           <strong>Env</strong>
           <div><code>PORT=3008</code></div>
         </div>
       </div>
 
       <p class="muted" style="margin-top:16px">Edit <code>public/index.html</code> to customize.</p>
+    </div>
+
+    <div class="products-section">
+      <h2>Featured Hair Products</h2>
+      <p class="muted">Professional tools and products for perfect hair styling.</p>
+      <div id="products-grid" class="products-grid">
+        <!-- Products will be loaded here by JavaScript -->
+      </div>
+    </div>
+
+    <script>
+      async function loadProducts() {
+        try {
+          const response = await fetch('/api/products');
+          const products = await response.json();
+          const grid = document.getElementById('products-grid');
+          
+          if (products.length === 0) {
+            grid.innerHTML = '<p class="muted">No products available.</p>';
+            return;
+          }
+
+          grid.innerHTML = products.map(product => {
+            const stockStatus = product.stock === 0 ? 'Out of Stock' : 
+                              product.stock <= 5 ? `Only ${product.stock} left` : 
+                              `${product.stock} in stock`;
+            const stockClass = product.stock === 0 ? 'stock-out' : 
+                              product.stock <= 5 ? 'stock-low' : '';
+            
+            return `
+              <div class="product-card">
+                <img src="${product.imageUrl}" alt="${product.name}" class="product-image" onerror="this.style.display='none'">
+                <div class="product-info">
+                  <p class="product-brand">${product.brand}</p>
+                  <h3 class="product-name">${product.name}</h3>
+                  <p class="product-description">${product.description}</p>
+                  <p class="product-price">$${product.price.toFixed(2)}</p>
+                  <p class="product-stock ${stockClass}">${stockStatus}</p>
+                  <button class="buy-button" 
+                          onclick="window.open('${product.checkoutUrl}', '_blank')"
+                          ${product.stock === 0 ? 'disabled' : ''}>
+                    ${product.stock === 0 ? 'Out of Stock' : 'Buy Now'}
+                  </button>
+                </div>
+              </div>
+            `;
+          }).join('');
+        } catch (error) {
+          console.error('Failed to load products:', error);
+          document.getElementById('products-grid').innerHTML = '<p class="muted">Failed to load products.</p>';
+        }
+      }
+
+      // Load products when page loads
+      document.addEventListener('DOMContentLoaded', loadProducts);
+    </script>
     </div>
   </body>
 </html>
