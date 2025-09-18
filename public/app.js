@@ -82,12 +82,27 @@ if (dateInput) {
   dateInput.min = new Date().toISOString().split('T')[0];
 }
 
+// Support ID helper
+function setSupportIdFromResponse(res) {
+  try {
+    const hasGet = res && res.headers && res.headers.get;
+    const id = hasGet ? res.headers.get('X-Request-Id') : null;
+    const el = document.getElementById('support-id');
+    if (id && el) {
+      el.textContent = `Support ID: ${id}`;
+    }
+  } catch (_) {
+    // noop
+  }
+}
+
 // Products rendering
 async function renderProducts() {
   const grid = document.getElementById('products-grid');
   if (!grid) return;
   try {
     const res = await fetch('/api/products');
+    setSupportIdFromResponse(res);
     if (!res.ok) throw new Error('Failed to load products');
     const items = await res.json();
     if (!Array.isArray(items) || items.length === 0) {
@@ -123,7 +138,8 @@ async function renderProducts() {
       })
       .join('');
   } catch (e) {
-    grid.innerHTML = '<p class="muted">Could not load products.</p>';
+    grid.innerHTML =
+      '<p class="muted">Could not load products. Please reference the Support ID if contacting us.</p>';
   }
 }
 renderProducts();
@@ -132,6 +148,7 @@ renderProducts();
 (async function showVersion() {
   try {
     const r = await fetch('/info');
+    setSupportIdFromResponse(r);
     if (!r.ok) return;
     const j = await r.json();
     const el = document.getElementById('app-version');
@@ -148,6 +165,7 @@ renderProducts();
   if (!grid) return;
   try {
     const r = await fetch('/api/inspiration');
+    setSupportIdFromResponse(r);
     if (!r.ok) throw new Error('Failed to fetch inspiration');
     const photos = await r.json();
     if (!Array.isArray(photos) || photos.length === 0) return;
@@ -166,6 +184,8 @@ renderProducts();
       .join('');
   } catch (e) {
     // keep the default placeholders
+    const el = document.getElementById('support-id');
+    if (el && !el.textContent) el.textContent = 'Support ID unavailable (offline)';
   }
 })();
 
