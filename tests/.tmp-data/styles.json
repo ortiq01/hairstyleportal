@@ -1,1 +1,48 @@
-[]
+[
+  {
+    "id": "nby30pe6",
+    "name": "Bob Cut",
+    "description": "Classic",
+    "imageUrl": ""
+  },
+  {
+    "id": "8wcbo12y",
+    "name": "Name 0",
+    "description": ""
+  },
+  {
+    "id": "ibbnxxuf",
+    "name": "Name 1",
+    "description": ""
+  },
+  {
+    "id": "824j6sea",
+    "name": "Name 2",
+    "description": ""
+  },
+  {
+    "id": "8e6o0h7f",
+    "name": "Excess",
+    "description": ""
+  },
+  {
+    "id": "y712tt9x",
+    "name": "Name 0",
+    "description": ""
+  },
+  {
+    "id": "gqa5er48",
+    "name": "Name 1",
+    "description": ""
+  },
+  {
+    "id": "f2ncsi2v",
+    "name": "Name 2",
+    "description": ""
+  },
+  {
+    "id": "ragkghag",
+    "name": "Excess",
+    "description": ""
+  }
+]

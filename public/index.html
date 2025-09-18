@@ -3,19 +3,38 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Hairstyle Portal</title>
+  <title>Hairstyle Portal — Sustainable Hair Salon | Book Online NL</title>
+  <meta name="description" content="Duurzame kapsalon ervaring in Nederland. Boek online voor knippen, kleuren, styling en behandelingen. Clean products, mindful techniques, and texture-positive looks.">
+  <meta name="keywords" content="kapsalon, duurzame kapper, hair salon, Amsterdam, Utrecht, Rotterdam, knippen, kleuren, balayage, behandeling, boek online">
+  <meta name="robots" content="index,follow">
+  <meta property="og:title" content="Hairstyle Portal — Sustainable Hair Salon">
+  <meta property="og:description" content="Mindful techniques, clean products, and styles that celebrate your natural texture. Boek nu.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://hairstyle-dev.hernandezortiz.pro/">
+  <meta property="og:locale" content="nl_NL">
+  <meta name="twitter:card" content="summary_large_image">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@400;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="styles.css?v=20250918b">
   </head>
   <body>
     <a href="#main-content" class="skip-link">Skip to main content</a>
-    
-    <header>
-      <div class="container">
-        <h1>Hairstyle Portal</h1>
-        <p class="subtitle">Simple Node.js/Express app served by PM2</p>
+
+    <header class="site-header">
+      <div class="container nav">
+        <div class="brand">
+          <span class="brand-mark" aria-hidden="true">✂︎</span>
+          <span class="brand-name">Hairstyle Portal</span>
+        </div>
+        <button id="nav-toggle" class="mobile-toggle" aria-label="Toggle navigation" aria-expanded="false" aria-controls="primary-nav">Menu</button>
+        <nav class="primary-nav" id="primary-nav" aria-label="Primary">
+          <a href="#about">About</a>
+          <a href="#services">Services</a>
+          <a href="#gallery">Gallery</a>
+          <a href="#booking">Booking</a>
+          <a href="#contact">Contact</a>
+        </nav>
       </div>
     </header>
 
@@ -32,6 +51,70 @@
             Style Quiz
           </button>
         </div>
+      </div>
+    </section>
+
+    <!-- About / Ethos -->
+    <section id="about" class="section about-section" aria-labelledby="about-title">
+      <h2 id="about-title">Sustainable, Ethical, You</h2>
+      <div class="about-content container">
+        <p>
+          We believe great hair shouldn’t cost the earth. Our salon focuses on mindful techniques, clean products, and styles that celebrate your natural texture.
+        </p>
+        <p class="muted">
+          From low-waste practices to cruelty-free care, we’re building a better beauty experience—one appointment at a time.
+        </p>
+      </div>
+    </section>
+
+    <!-- Services Overview -->
+    <section id="services" class="section services-section" aria-labelledby="services-heading">
+      <h2 id="services-heading">Signature Services</h2>
+      <div class="container grid">
+        <article class="tile" aria-labelledby="svc-cut">
+          <h3 id="svc-cut">Cut & Shape</h3>
+          <p>Precision dry/wet cuts tailored to your lifestyle and texture.</p>
+        </article>
+        <article class="tile" aria-labelledby="svc-color">
+          <h3 id="svc-color">Color & Shine</h3>
+          <p>Gloss, balayage, and gentle color with a healthy-first approach.</p>
+        </article>
+        <article class="tile" aria-labelledby="svc-style">
+          <h3 id="svc-style">Style & Finish</h3>
+          <p>Effortless styling, blowouts, and occasion looks that last.</p>
+        </article>
+        <article class="tile" aria-labelledby="svc-care">
+          <h3 id="svc-care">Care & Repair</h3>
+          <p>Treatments that strengthen, hydrate, and protect your hair.</p>
+        </article>
+      </div>
+    </section>
+
+    <!-- Gallery -->
+    <section id="gallery" class="section gallery-section" aria-labelledby="gallery-title">
+      <h2 id="gallery-title">Inspiration Gallery</h2>
+      <div class="container gallery-grid" aria-live="polite">
+        <figure class="gallery-item" aria-label="Style inspiration 1"></figure>
+        <figure class="gallery-item" aria-label="Style inspiration 2"></figure>
+        <figure class="gallery-item" aria-label="Style inspiration 3"></figure>
+        <figure class="gallery-item" aria-label="Style inspiration 4"></figure>
+        <figure class="gallery-item" aria-label="Style inspiration 5"></figure>
+        <figure class="gallery-item" aria-label="Style inspiration 6"></figure>
+      </div>
+    </section>
+
+    <!-- Testimonials -->
+    <section id="testimonials" class="section testimonials-section" aria-labelledby="testimonials-title">
+      <h2 id="testimonials-title">Kind Words</h2>
+      <div class="container testimonials">
+        <blockquote>
+          “Best cut I’ve had in years—easy to style and grows out beautifully.”
+          <footer>— Alex, Berlin</footer>
+        </blockquote>
+        <blockquote>
+          “Thoughtful color and amazing care tips. My curls have never felt better.”
+          <footer>— Maya, Amsterdam</footer>
+        </blockquote>
       </div>
     </section>
 
@@ -80,15 +163,23 @@
             <textarea id="notes" name="notes" rows="4" placeholder="Any specific requests or hair concerns..."></textarea>
           </div>
           
-          <button type="submit" class="cta-button cta-primary" style="width: 100%;">
+          <button type="submit" class="cta-button cta-primary full-width">
             Submit Booking Request
           </button>
+          <div class="booking-integrations" aria-label="External booking options">
+            <p class="muted mt-2">Prefer direct booking?</p>
+            <div class="booking-links">
+              <a class="cta-button cta-secondary" href="https://www.treatwell.nl/" target="_blank" rel="nofollow noopener">Book via Treatwell</a>
+              <a class="cta-button cta-secondary" href="https://www.fresha.com/nl" target="_blank" rel="nofollow noopener">Book via Fresha</a>
+              <a class="cta-button cta-secondary" href="https://salonized.com/nl" target="_blank" rel="nofollow noopener">Book via Salonized</a>
+            </div>
+          </div>
         </form>
       </div>
     </section>
 
     <!-- Quiz Section -->
-    <section id="quiz" class="section quiz-section" aria-labelledby="quiz-title" style="display: none;">
+  <section id="quiz" class="section quiz-section hidden" aria-labelledby="quiz-title">
       <h2 id="quiz-title">Find Your Perfect Style</h2>
       <div class="quiz-container">
         <div class="quiz-question">
@@ -131,181 +222,48 @@
           </div>
         </div>
         
-        <button id="quiz-submit" class="cta-button cta-primary" style="margin-top: 2rem;">
+        <button id="quiz-submit" class="cta-button cta-primary mt-8">
           Get My Style Recommendation
         </button>
         
-        <div id="quiz-results" style="display: none; margin-top: 2rem;">
+        <div id="quiz-results" class="hidden mt-8">
           <h3>Your Perfect Style:</h3>
-          <div id="style-recommendation" style="font-size: 1.2rem; margin-top: 1rem;"></div>
+          <div id="style-recommendation" class="text-lg mt-4"></div>
         </div>
       </div>
     </section>
 
-    <!-- Existing Services Section -->
+    <!-- Existing Products Section -->
     <main id="main-content">
       <div class="container">
-        <section aria-labelledby="products-heading" class="section" style="padding-top:0">
+        <section aria-labelledby="products-heading" class="section pt-0">
           <h2 id="products-heading">Recommended Products</h2>
           <div id="products-grid" class="grid" aria-live="polite"></div>
-        </section>
-
-        <section aria-labelledby="services-heading">
-          <h2 id="services-heading" style="visibility: hidden; height: 0; margin: 0;">Available Services</h2>
-          
-          <div class="grid">
-            <div class="tile">
-              <h2>Health Check</h2>
-              <p>Monitor application health status</p>
-              <a href="/health" aria-describedby="health-desc">Check Health</a>
-              <div id="health-desc" style="display: none;">Returns OK if the application is running properly</div>
-            </div>
-            
-            <div class="tile">
-              <h2>System Info</h2>
-              <p>View application and system information</p>
-              <a href="/info" aria-describedby="info-desc">View Info</a>
-              <div id="info-desc" style="display: none;">Shows Node.js version, hostname, and configuration details</div>
-            </div>
-            
-            <div class="tile">
-              <h2>Environment</h2>
-              <p>Current configuration settings</p>
-              <code>PORT=3008</code>
-            </div>
-          </div>
         </section>
       </div>
     </main>
 
-    <footer>
-      <div class="container">
-        <p class="footer-text">
-          Edit <code>public/index.html</code> to customize this portal.
-          <span id="app-version" class="muted" style="margin-left:8px"></span>
-        </p>
+    <footer id="contact">
+      <div class="container footer-grid">
+        <div>
+          <h3>Visit</h3>
+          <p class="muted">123 Greenway, City Center</p>
+          <p class="muted">Mon–Sat · 10:00–18:00</p>
+        </div>
+        <div>
+          <h3>Contact</h3>
+          <p class="muted"><a href="mailto:hello@hairstyleportal.local">hello@hairstyleportal.local</a></p>
+          <p class="muted"><a href="tel:+123456789">+1 234 567 89</a></p>
+        </div>
+        <div>
+          <p class="footer-text">
+            Edit <code>public/index.html</code> to customize this portal.
+            <span id="app-version" class="muted ml-2"></span>
+          </p>
+        </div>
       </div>
     </footer>
 
-    <script>
-      // Quiz toggle
-      document.getElementById('quiz-btn').addEventListener('click', function() {
-        const quizSection = document.getElementById('quiz');
-        const isHidden = quizSection.style.display === 'none' || !quizSection.style.display;
-        quizSection.style.display = isHidden ? 'block' : 'none';
-        if (!isHidden) return;
-        quizSection.scrollIntoView({ behavior: 'smooth' });
-      });
-
-      // Quiz option selection
-      document.querySelectorAll('.quiz-option').forEach(option => {
-        option.addEventListener('click', function() {
-          const question = this.closest('.quiz-question');
-          question.querySelectorAll('.quiz-option').forEach(opt => {
-            opt.classList.remove('selected');
-            opt.setAttribute('aria-pressed', 'false');
-          });
-          this.classList.add('selected');
-          this.setAttribute('aria-pressed', 'true');
-        });
-
-        option.addEventListener('keydown', function(e) {
-          if (e.key === 'Enter' || e.key === ' ') {
-            e.preventDefault();
-            this.click();
-          }
-        });
-      });
-
-      // Quiz submission
-      document.getElementById('quiz-submit').addEventListener('click', function() {
-        const selectedOptions = document.querySelectorAll('.quiz-option.selected');
-        if (selectedOptions.length < 2) {
-          alert('Please answer all questions to get your style recommendation.');
-          return;
-        }
-
-        const hairType = document.querySelector('.quiz-question:nth-child(1) .quiz-option.selected')?.dataset.value;
-        const lifestyle = document.querySelector('.quiz-question:nth-child(2) .quiz-option.selected')?.dataset.value;
-
-        let recommendation = '';
-        if (hairType === 'straight' && lifestyle === 'low-maintenance') {
-          recommendation = 'Classic Bob - Clean lines that work with your natural texture and require minimal styling.';
-        } else if (hairType === 'wavy' && lifestyle === 'moderate') {
-          recommendation = 'Layered Lob - Enhances your natural waves with versatile styling options.';
-        } else if (hairType === 'curly' && lifestyle === 'low-maintenance') {
-          recommendation = 'Curly Shag - Embraces your curls with low-maintenance layers for natural movement.';
-        } else if (hairType === 'coily' && lifestyle === 'high-maintenance') {
-          recommendation = 'Defined Curl Pattern - Structured cut that showcases your natural texture with styling versatility.';
-        } else {
-          recommendation = `Based on your ${hairType} hair and ${lifestyle?.replace('-', ' ')} lifestyle, we recommend a consultation to find your perfect custom style.`;
-        }
-
-        document.getElementById('style-recommendation').textContent = recommendation;
-        document.getElementById('quiz-results').style.display = 'block';
-      });
-
-      // Booking form submission
-      document.getElementById('booking-form').addEventListener('submit', function(e) {
-        e.preventDefault();
-        alert('Thank you for your booking request! We will contact you within 24 hours to confirm your appointment.');
-      });
-
-  // Set minimum date to today
-      document.getElementById('date').min = new Date().toISOString().split('T')[0];
-
-      // Products rendering
-      async function renderProducts() {
-        const grid = document.getElementById('products-grid');
-        if (!grid) return;
-        try {
-          const res = await fetch('/api/products');
-          if (!res.ok) throw new Error('Failed to load products');
-          const items = await res.json();
-          if (!Array.isArray(items) || items.length === 0) {
-            grid.innerHTML = '<p class="muted">Products coming soon.</p>';
-            return;
-          }
-          grid.innerHTML = items.map(p => {
-            const safe = {
-              brand: (p.brand||'').toString(),
-              name: (p.name||'').toString(),
-              price: typeof p.price === 'number' ? p.price.toFixed(2) : (p.price||''),
-              stock: typeof p.stock === 'number' ? p.stock : (p.stock||'')
-            };
-            const inStock = Number(safe.stock) > 0;
-            const buy = p.url ? `<a href="${p.url}" class="cta-button cta-secondary" target="_blank" rel="noopener">Buy</a>` : '';
-            return `
-              <div class="tile" role="article">
-                <div style="display:flex;justify-content:space-between;align-items:center;gap:8px">
-                  <div>
-                    <strong>${safe.brand}</strong>
-                    <div>${safe.name}</div>
-                  </div>
-                  <div style="text-align:right">
-                    <div>€ ${safe.price}</div>
-                    <div class="muted">${inStock ? `${safe.stock} in stock` : 'Out of stock'}</div>
-                  </div>
-                </div>
-                <div class="mt-4">${buy}</div>
-              </div>`;
-          }).join('');
-        } catch (e) {
-          grid.innerHTML = '<p class="muted">Could not load products.</p>';
-        }
-      }
-      renderProducts();
-
-      // Load and display version
-      (async function showVersion(){
-        try {
-          const r = await fetch('/info');
-          if (!r.ok) return;
-          const j = await r.json();
-          const el = document.getElementById('app-version');
-          if (el && j.version) el.textContent = `v${j.version}`;
-        } catch {}
-      })();
-    </script>
+  <script src="app.js?v=20250918b"></script>
   </body>
   </html>

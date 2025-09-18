@@ -71,3 +71,20 @@ jobs:
             } else {
               await github.rest.issues.createComment({ owner, repo, issue_number, body: message });
             }
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '14'
+      - name: Install dependencies
+        run: npm install
+      - name: Build
+        run: npm run build
+      - name: Start server
+        run: npm start
+      - name: Check server
+        run: curl -f http://localhost:3000/ || exit 1
+      - name: Helmet security
+        run: |
+          const helmet = require('helmet');
+          app.set('trust proxy', 1);
+          app.use(helmet());

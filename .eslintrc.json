@@ -25,7 +25,20 @@
   "overrides": [
     {
       "files": ["tests/**/*.*"],
-      "env": { "jest": true }
+      "env": { "jest": true },
+      "rules": {
+        "n/no-unpublished-require": "off",
+        "jest/no-conditional-expect": "off"
+      }
+    },
+    {
+      "files": ["public/**/*.js"],
+      "env": { "browser": true, "es2021": true },
+      "parserOptions": { "sourceType": "module" },
+      "rules": {
+        "n/no-unsupported-features/node-builtins": "off",
+        "no-alert": "off"
+      }
     }
   ]
 }
