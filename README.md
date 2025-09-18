@@ -53,3 +53,28 @@ The application uses a consistent design system with CSS variables for maintaina
 
 ## CI
 A minimal GitHub Actions workflow can be added under `.github/workflows/ci.yml` to run basic checks.
+
+## Inspiration Gallery (Unsplash)
+
+- The Gallery section on the homepage fetches hairstyle photos from Unsplash.
+- Works locally without credentials using a safe fallback (`source.unsplash.com`).
+- For higher-quality results and author attributions, set an API key:
+
+```bash
+export UNSPLASH_ACCESS_KEY=your_unsplash_access_key
+npm start
+```
+
+Security & CSP:
+- Images are allowed from `https://images.unsplash.com` and `https://source.unsplash.com` via CSP.
+- No inline styles or scripts are used.
+
+Privacy (NL/AVG):
+- Third-party images are requested from Unsplash CDN. No tracking scripts are included.
+- If you add analytics or cookies later, ensure compliance with AVG (GDPR): provide purpose, consent, and data retention info.
+- Consider documenting data processing activities (verwerkingsregister) and updating your privacy policy accordingly.
+
+## Local SEO & Booking (NL)
+- Meta tags include Dutch keywords for visibility.
+- Booking links to Treatwell, Fresha, and Salonized are present. Replace with your salon profiles for best conversion in NL.
+

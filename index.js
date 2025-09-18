@@ -1,5 +1,6 @@
 const express = require('express');
 const helmet = require('helmet');
+const { fetch } = require('undici');
 const { httpLogger } = require('./middleware/logging');
 const { apiLimiter, writeLimiter } = require('./middleware/rateLimit');
 const { validateStyleCreate, validateStyleUpdate } = require('./middleware/validation');
@@ -24,7 +25,12 @@ app.use(
         'script-src': ["'self'"],
         'style-src': ["'self'", 'https://fonts.googleapis.com'],
         'font-src': ["'self'", 'https://fonts.gstatic.com', 'data:'],
-        'img-src': ["'self'", 'data:'],
+        'img-src': [
+          "'self'",
+          'data:',
+          'https://images.unsplash.com',
+          'https://source.unsplash.com',
+        ],
         'object-src': ["'none'"],
         'upgrade-insecure-requests': [],
       },
@@ -48,6 +54,7 @@ app.use('/api', apiLimiter);
 const dataDir = process.env.DATA_DIR || path.join(__dirname, 'data');
 const dataFile = path.join(dataDir, 'styles.json');
 const productsFile = path.join(dataDir, 'products.json');
+const UNSPLASH_ACCESS_KEY = process.env.UNSPLASH_ACCESS_KEY;
 
 async function ensureDataFile() {
   await fs.mkdir(dataDir, { recursive: true });
@@ -143,6 +150,50 @@ app.delete('/api/styles/:id', async (req, res) => {
 app.get('/api/products', async (_req, res) => {
   const products = await readProducts();
   res.json(products);
+});
+
+// Inspiration images from Unsplash (or fallback)
+app.get('/api/inspiration', async (_req, res) => {
+  try {
+    // If an API key is available, query Unsplash API for hairstyle photos
+    if (UNSPLASH_ACCESS_KEY) {
+      const q = new URLSearchParams({
+        query: 'hairstyle',
+        per_page: '12',
+        orientation: 'portrait',
+      }).toString();
+      const resp = await fetch(`https://api.unsplash.com/search/photos?${q}`, {
+        headers: {
+          Authorization: `Client-ID ${UNSPLASH_ACCESS_KEY}`,
+          'Accept-Version': 'v1',
+        },
+      });
+      if (!resp.ok) throw new Error(`unsplash ${resp.status}`);
+      const data = await resp.json();
+      const items = Array.isArray(data.results)
+        ? data.results.map((p) => ({
+            id: p.id,
+            src: p.urls && (p.urls.small_s3 || p.urls.small || p.urls.thumb),
+            alt: p.alt_description || 'hairstyle inspiration',
+            author: p.user && (p.user.name || p.user.username),
+            link: p.links && p.links.html,
+          }))
+        : [];
+      return res.json(items.filter((i) => i.src));
+    }
+
+    // Fallback: unauthenticated Source URLs (may redirect to images.unsplash.com)
+    const fallback = Array.from({ length: 12 }).map((_, i) => ({
+      id: `fallback-${i + 1}`,
+      src: `https://source.unsplash.com/featured/800x1000/?hairstyle,hair,beauty&sig=${i + 1}`,
+      alt: 'hairstyle inspiration',
+      author: 'Unsplash',
+      link: 'https://unsplash.com/s/photos/hairstyle',
+    }));
+    return res.json(fallback);
+  } catch (_e) {
+    return res.status(502).json({ error: 'inspiration_unavailable' });
+  }
 });
 
 // Fallbacks & error handling

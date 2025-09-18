@@ -142,6 +142,33 @@ renderProducts();
   }
 })();
 
+// Populate inspiration gallery
+(async function populateGallery() {
+  const grid = document.querySelector('.gallery-grid');
+  if (!grid) return;
+  try {
+    const r = await fetch('/api/inspiration');
+    if (!r.ok) throw new Error('Failed to fetch inspiration');
+    const photos = await r.json();
+    if (!Array.isArray(photos) || photos.length === 0) return;
+    grid.innerHTML = photos
+      .slice(0, 12)
+      .map((p) => {
+        const src = (p && p.src) || '';
+        const alt = (p && p.alt) || 'hairstyle inspiration';
+        const author = (p && p.author) || '';
+        const link = (p && p.link) || '';
+        const credit = author
+          ? `<span class="credit">Photo${author ? ` by ${author}` : ''}${link ? ` · <a href="${link}" target="_blank" rel="noopener noreferrer">Unsplash</a>` : ''}</span>`
+          : '';
+        return `<figure class="gallery-item">${src ? `<img src="${src}" alt="${alt}">` : ''}${credit}</figure>`;
+      })
+      .join('');
+  } catch (e) {
+    // keep the default placeholders
+  }
+})();
+
 // Mobile nav toggle
 const navToggle = document.getElementById('nav-toggle');
 const primaryNav = document.getElementById('primary-nav');

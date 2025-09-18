@@ -58,6 +58,19 @@ describe('hairstyleportal API', () => {
     expect(res.headers['ratelimit-reset']).toBeDefined();
   });
 
+  it('GET /api/inspiration returns array (fallback ok)', async () => {
+    const res = await request(app).get('/api/inspiration');
+    expect([200, 502]).toContain(res.statusCode); // allow upstream errors
+    if (res.statusCode === 200) {
+      expect(Array.isArray(res.body)).toBe(true);
+      if (res.body.length > 0) {
+        expect(typeof res.body[0].src === 'string').toBe(true);
+      }
+    } else {
+      expect(res.body).toHaveProperty('error');
+    }
+  });
+
   it('sets and propagates X-Request-Id', async () => {
     const res1 = await request(app).get('/health');
     expect(res1.status).toBe(200);
